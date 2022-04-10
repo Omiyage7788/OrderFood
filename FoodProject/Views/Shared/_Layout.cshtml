@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JoinFood-@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @RenderSection("css", false)
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			@Html.ActionLink("JoinFood", "Index", "Home", new { area = "" }, new { @class = "navbar-brand text-bolder" })
+		</div>
+		<div class="navbar-collapse collapse text-right">
+			<ul class="nav navbar-nav">
+				@if (Session["memberID"] != null)
+				{
+					<li>
+						<h4 class="text-right" style="margin-top: 17px;"><strong>@Session["memberName"]，歡迎訂購您喜歡的餐點!</strong></h4>
+					</li>
+				}
+				<li>@Html.ActionLink("查看店家", "Index", "Home")</li>
+
+				@if (Session["cartHasItems"] != null)
+				{
+					<li id="cartRoute1">@Html.ActionLink("訂餐車", "MyCart", "Home")</li>
+				}
+				else
+				{
+					<li id="cartRoute2"><a style="cursor:pointer" class="empty">訂餐車</a></li>
+				}
+				@if (Session["memberID"] != null)
+				{
+					<li>@Html.ActionLink("管理訂單", "OrderIndex", "Members", new { id = Session["memberID"] }, "")</li>
+					<li>@Html.ActionLink("會員資料", "Details", "Members", new { id = Session["memberID"] }, "")</li>
+					<li>
+						<a href="/Members/NotificationIndex/@Session["memberID"]">
+							推播訊息
+							<span class="navUnread">@{Html.RenderAction("_getUnread", "Members");}</span>
+						</a>
+					</li>
+					<li>@Html.ActionLink("登出", "Logout", "Home")</li>
+				}
+				else
+				{
+					<li> @Html.ActionLink("登入/註冊", "Login", "Home")</li>
+				}
+				</ul>
+		</div>
+	</div>
+
+	<div class="container body-content well">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year-勞動力發展署高屏澎東分署110年第一期行動商務系統設計與開發專班-第四組</p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+	<script>
+		let interval = 3000;
+		$(document).ready(function () {
+			$('.navUnread').load('@Url.Action("_getUnread", "Members")');
+			setInterval(function () { $('.navUnread').load('@Url.Action("_getUnread", "Members")')}, interval);
+		});
+
+		$('li[id^="cartRoute"]').click(function () {
+			if (this.children[0].className == 'empty')
+				alert('目前購物車中沒有任何商品!');
+		});
+	</script>
+	@RenderSection("scripts", required: false)
+</body>
+</html>

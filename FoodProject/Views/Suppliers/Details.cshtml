@@ -1,0 +1,108 @@
+﻿@model FoodProject.ViewModels.VMSuppliers
+
+@{
+    ViewBag.Title = "店家資料";
+}
+
+<h2><strong>店家資料</strong></h2>
+
+<div class="form-horizontal">
+	<hr />
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			店家照片
+		</label>
+		<div class="col-md-10">
+			<img src="/Home/GetSupplierImage/@Model.Supplier.SupplierID" class="img-thumbnail img-max" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SupplierName)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SupplierName)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			提供餐點類別
+		</label>
+		<div class="col-md-10">
+			@for (int i = 0; i < Model.Categories.Count; i++)
+			{
+				<label class="checkbox-inline">
+					@Html.CheckBoxFor(model => model.Categories[i].IsSelected, new { @onclick = "return false" })
+					@Model.Categories[i].CategoryName
+				</label>
+				@Html.HiddenFor(model => model.Categories[i].CategoryID)
+				@Html.HiddenFor(model => model.Categories[i].CategoryName)
+			}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SCellphone)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SCellphone)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SPhone)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SPhone)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SEmail)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SEmail)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SCity)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SCity)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SDistrict)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SDistrict)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SRoad)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SRoad)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.BusinessHour)
+		</label>
+		<div class="col-md-10 pt-6">
+			@if (Model.Supplier.BusinessHour != null)
+			{
+				@Html.Raw(Model.Supplier.BusinessHour.ToString().Replace("\r\n", "<br />"))
+			}
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			@Html.ActionLink("更新資料", "Edit", new { id = Model.Supplier.SupplierID }, new { @class = "btn btn-primary" })
+		</div>
+	</div>
+</div>

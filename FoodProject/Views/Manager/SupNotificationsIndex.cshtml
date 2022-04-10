@@ -1,0 +1,68 @@
+﻿@model IEnumerable<FoodProject.Models.SupMessage>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "推播管理-店家";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>推播管理-店家</strong></h2>
+
+<p class="text-right">
+	@Html.ActionLink("查看系統推播", "AdminNotificationIndex", "", new { @class = "btn" })|
+	@Html.ActionLink("查看店家推播", "SupNotificationsIndex", "", new { @class = "btn" })
+</p>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>
+			推播編號
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.StartDate)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.EndDate)
+		</th>
+		<th>
+			發布店家
+		</th>
+		<th>
+			內容
+		</th>
+		@*<th></th>*@
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.MessageID)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.StartDate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.EndDate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Suppliers.SupplierName)
+			</td>
+			<td>
+				@Html.Raw(item.SMessage.ToString().Replace("\r\n", "<br />"))
+			</td>
+			@*<td class="text-center>
+				@Html.ActionLink("刪除", "NotificationDelete", new { id = item.MessageID }, new { @class = "btn btn-danger" })
+			</td>*@
+		</tr>
+	}
+
+</table>
+
+@*<h2 class="text-center">@ViewBag.NoData</h2>*@
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("NotificationsIndex", new { page }))
+</div>

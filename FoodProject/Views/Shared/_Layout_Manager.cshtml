@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>JoinFood後台-@ViewBag.Title</title>
+	@Styles.Render("~/Content/css")
+	@RenderSection("css", false)
+	@Scripts.Render("~/bundles/modernizr")
+<style>
+	.navbar-inverse .navbar-toggle:hover .icon-bar,
+	.navbar-inverse .navbar-toggle:focus .icon-bar {
+		background-color: #fafbfe;
+	}
+
+	@@media screen and (min-width:768px) {
+		.navbar-toggle {
+			display: block;
+		}
+	}
+
+	@@media screen and (min-width:1700px) {
+		.navbar-toggle {
+			display: none;
+		}
+	}
+</style>
+</head>
+<body>
+	<div id="wrapper" class="navbar navbar-inverse navbar-fixed-top">
+		<a href="#menu-toggle" class="navbar-toggle" id="menu-toggle">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</a>
+		<span id="title" class="navbar-brand text-bolder">JoinFood後台</span>
+		<div id="sidebar-wrapper">
+			<ul class="sidebar-nav">
+				<li class="sidebar-brand">
+					<a class="" href="#">JoinFood後台</a>
+				</li>
+
+				@if (Session["adminID"] == null)
+				{
+					<li> @Html.ActionLink("登入", "Login", "Manager")</li>
+				}
+				else
+				{
+					<li> @Html.ActionLink("客戶管理", "MembersIndex", "Manager")</li>
+					<li> @Html.ActionLink("店家管理", "SuppliersIndex", "Manager")</li>
+					<li> @Html.ActionLink("訂單列表", "OrdersIndex", "Manager")</li>
+					<li> @Html.ActionLink("推播列表", "AdminNotificationIndex", "Manager")</li>
+					if (Session["highest"] != null)
+					{
+						<li> @Html.ActionLink("管理員管理", "AdminManagementIndex", "Manager")</li>
+					}
+					<li> @Html.ActionLink("帳號資料", "AdminDetails", "Manager", new { id = Session["adminID"] }, "")</li>
+					<li> @Html.ActionLink("登出", "Logout", "Manager")</li>
+				}
+			</ul>
+		</div>
+	</div>
+
+	<div class="container body-content well">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; @DateTime.Now.Year-勞動力發展署高屏澎東分署110年第一期行動商務系統設計與開發專班-第四組</p>
+		</footer>
+	</div>
+
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	<script>
+		$("#menu-toggle").click(function (e) {
+			e.preventDefault();
+			$("#wrapper").toggleClass("toggled");
+		});
+	</script>
+	@RenderSection("scripts", false)
+</body>
+</html>

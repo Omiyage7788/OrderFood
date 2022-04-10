@@ -1,0 +1,167 @@
+﻿@model FoodProject.ViewModels.VMProduct
+
+@{
+	ViewBag.Title = "商品列表";
+	var count = 0;
+}
+
+<style>
+	.caption {
+		text-align: center;
+	}
+
+	.form-group {
+		vertical-align: central;
+		font-size: 1.5rem;
+	}
+</style>
+
+
+<div>
+	<div class="div-background"><img src="/Home/GetSupplierImage/@Model.supplier.SupplierID" class="img-background" /></div>
+	<hr />
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h3 id="SupName" class="text-center">@Model.supplier.SupplierName</h3>
+		</div>
+		<div class="panel-body">
+			@if (Model.supplier.BusinessHour != null)
+			{
+				<div class="col-md-3">
+					<p><strong>營業時間：</strong></p>
+					@Html.Raw(Model.supplier.BusinessHour.ToString().Replace("\r\n", "<br />"))
+				</div>
+			}
+			<div class="col-md-6">
+				<p><strong>手機：</strong>@Model.supplier.SCellphone</p>
+				@if (Model.supplier.SPhone != null)
+				{
+					<p><strong>市話：</strong>@Model.supplier.SPhone</p>
+				}
+				<p><strong>地址：</strong>@Model.supplier.SCity@Model.supplier.SDistrict@Model.supplier.SRoad</p>
+			</div>
+		</div>
+	</div>
+</div>
+<hr />
+
+<div class="row">
+	@foreach (var item in Model.products)
+	{
+		<div class="col-md-3">
+			<div class="thumbnail">
+				<img src="@Url.Action("GetProductImage", new {id = item.ProductID})" class="PImg shopimg" />
+				<div class="caption">
+					<input type="hidden" value="@item.ProductID" class="PID" />
+					<h3 class="PName text-truncate">@item.PName</h3>
+					<div class="form-group form-horizontal row">
+						<h6 style="color:lightgray;text-decoration:line-through">原價 @string.Format("{0:C0}", item.Price)</h6>
+						<div>
+							<h4 style="color: orangered; font-size: 2.1rem;" class="Price" title="@item.Price">
+								<strong>@string.Format("{0:C0}", (item.Price - item.Discount))</strong>
+							</h4>
+							<input type="hidden" value="@item.Discount" class="PDisc" />
+						</div>
+						<div class="col-xs-6">
+							<label class="control-label" style="font-size: 0.9rem;">數量:</label>
+						</div>
+						<div class="col-xs-6">
+							<input type="number" min="1" class="form-control" id="amount" required />
+						</div>
+					</div>
+					<div>
+						<button class="btn btn-info btn-lg btn-block addCart"><span class="glyphicon glyphicon-shopping-cart"></span> 加入訂餐車</button>
+					</div>
+					<input type="hidden" value="@item.SupplierID" name="id" class="PSupp" />
+				</div>
+			</div>
+		</div>
+		<span class="hidden">@(count++)</span>
+		if (count % 4 == 0)
+		{
+			<div class="clearfix"></div>
+		}
+	}
+</div>
+
+<span class="cart-contain" title="查看我的訂餐車">
+	<span class="badge" id="itemAmount"></span><a class="cart" href="/Home/MyCart"><span class="glyphicon glyphicon-shopping-cart"></span></a>
+</span>
+@section css{
+	<style>
+		.badge {
+			min-width: 20px;
+			font-size: 2rem;
+			background-color: red;
+			border-radius: 50%;
+		}
+	</style>
+}
+
+@section scripts{
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		var cart = [];
+
+		if (localStorage.getItem("cart")) {
+			cart = JSON.parse(localStorage.getItem("cart"));
+			if (cart[0]["PSupp"] != $('.PSupp').val()) {
+				localStorage.removeItem("cart");
+				cart = [];
+				setSession("cartHasItems", "clear");
+				$('#cartRoute1').empty().append("<a style='cursor: pointer' class='empty'>訂餐車</a>");
+			} else {
+				$('#itemAmount').text(cart.length);
+			}
+		}
+
+
+
+
+		$('.addCart').click(function () {
+			let product = $(this).closest('.thumbnail');
+			let newPID = parseInt(product.find('.PID').val());
+			let checkAmount = parseInt(product.find('#amount').val());
+
+			if (checkAmount < 1 || isNaN(checkAmount)) {
+				alert("請輸入合理數量");
+			} else if (cart.length > 0) {
+				for (let i = 0; i < cart.length; i++) {
+					if (newPID == cart[i]["PID"]) {
+						alert("此餐點已在訂餐車中");
+						break;
+					}
+					else if (i == cart.length - 1) {
+						setCart(product);
+						break;
+					}
+				}
+			} else {
+				setCart(product);
+			}
+
+
+			function setCart(product) {
+				let newItem = {
+					PID: parseInt(product.find('.PID').val()),
+					PName: product.find('.PName').text().trim(),
+					PAmount: parseInt(product.find('#amount').val()),
+					Price: parseInt(product.find('.Price').attr('title')),
+					PDisc: parseInt(product.find('.PDisc').val()),
+					PSupp: parseInt(product.find('.PSupp').val()),
+					SupName: $('#SupName').text().trim()
+				};
+
+				cart.push(newItem);
+				$('#itemAmount').text(cart.length);
+				alert("餐點已放入訂餐車");
+				localStorage.setItem("cart", JSON.stringify(cart));
+				/*let SupID = product.find('.PSupp').val();*/
+				setSession("cartHasItems", "Y");
+				$('#cartRoute1').empty().append("<a href='/Home/MyCart'>訂餐車</a>");
+				$('#cartRoute2').empty().append("<a href='/Home/MyCart'>訂餐車</a>");
+			}
+		});
+
+	</script>
+}

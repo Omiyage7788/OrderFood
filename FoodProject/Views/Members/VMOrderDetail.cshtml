@@ -1,0 +1,147 @@
+﻿@model FoodProject.ViewModels.VMOrderDetails
+
+@{
+	ViewBag.Title = "訂單明細";
+	var sumAmount = Model.orderDetails.Sum(o => o.Quantity);
+	var total = @Model.orderDetails.Sum(o => (o.Price - o.Discount) * o.Quantity);
+}
+
+<h2><strong>訂單明細</strong></h2>
+
+<div class="row border-bt">
+	<h4 class="col-sm-2 text-primary">下訂日期</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderDate.ToString("yyyy-MM-dd")</p>
+	<h4 class="col-sm-2 text-primary">送達日期時間</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.RequiredDate.ToString("yyyy-MM-dd HH:mm")</p>
+	<h4 class="col-sm-2 text-primary">送達地點</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipAddress</p>
+	<h4 class="col-sm-2 text-primary">運送方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">付款方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.PayMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">訂單狀態</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderStatus.Status</p>
+	@if (Model.orders.OrderState == 5)
+	{
+		<h4 class="col-sm-2 text-primary">店家取消原因</h4>
+		<p class="col-sm-2 mt-10">@Model.orders.SupplierDecline</p>
+	}
+	@if (Model.orders.OrderState == 3)
+	{
+		<h4 class="col-sm-2 text-primary">評價</h4>
+		<p class="col-sm-2 mt-10">尚未評價</p>
+	}
+	else if (Model.orders.OrderState == 6)
+	{
+		<h4 class="col-sm-2 text-primary">評價</h4>
+		<p class="col-sm-2 mt-10">@Model.orders.Rate</p>
+	}
+</div>
+<div class="row border-bt">
+	<h4 class="col-sm-1 text-primary">備註</h4>
+	<p class="col-sm-5 mt-10">@Model.orders.Note</p>
+	@*<h4 class="col-sm-1 text-primary">訂餐連結</h4>
+		<p class="col-sm-5 mt-10">https://www.google.com</p>*@
+</div>
+
+<h4 class="text-primary">訂購店家</h4>
+<table class="table">
+	<caption>@Model.orders.OrderTitle</caption>
+	<tr class="bg-info">
+		<th class="text-center">餐點</th>
+		<th class="text-center">價錢</th>
+		<th class="text-center">折扣</th>
+		<th class="text-center">數量</th>
+		<th class="text-center">小計</th>
+	</tr>
+
+	@foreach (var item in Model.orderDetails)
+	{
+		<tr class="text-center">
+			<td>@item.Products.PName</td>
+			<td>@string.Format("{0:C0}", item.Price)</td>
+			<td>@string.Format("{0:C0}", item.Discount)</td>
+			<td>@item.Quantity</td>
+			<td>@string.Format("{0:C0}", (item.Price - item.Discount) * item.Quantity)</td>
+		</tr>
+	}
+</table>
+
+<h3 class="text-danger text-right"><strong>共@(sumAmount + "份餐點，總計：" + string.Format("{0:C0}", total))</strong></h3>
+
+<div class="col-sm-offset-1 col-sm-11">
+	@if (Model.orders.OrderState == 1)
+	{
+		@Html.ActionLink("修改", "OrderEdit", new { id = Model.orders.OrderID, page = ViewBag.page }, new { @class = "btn btn-info" })
+	}
+	@if (Model.orders.OrderState == 3)
+	{
+		<input type="button" value="給評價" class="btn btn-warning" data-toggle="modal" data-target="#SubmitModal" />
+	}
+	<button class="btn btn-danger" id="deleteOrder">刪除訂單</button>
+	@Html.ActionLink("返回", "OrderIndex", new { id = Model.orders.MemberID, page = ViewBag.page }, new { @class = "btn btn-primary" })
+</div>
+<br />
+
+<div class="modal fade" tabindex="-1" id="SubmitModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="@Url.Action("RateOrder")" method="post">
+				@Html.AntiForgeryToken()
+				<input name="id" type="hidden" value="@Model.orders.OrderID" />
+				<input name="page" type="hidden" value="@ViewBag.page" />
+
+				<div class="modal-header">
+					<h4 class="modal-title">請為此訂單提供您的評價(最高評價為5，最低為1)</h4>
+				</div>
+
+				<div class="modal-body" style="margin-bottom: 20px;">
+					<div class="form-group">
+						<label class="control-label col-sm-2">評價：</label>
+						<div class="col-sm-10">
+							<select class="form-control" name="Rate">
+								<option value=1>1</option>
+								<option value=2>2</option>
+								<option value=3>3</option>
+								<option value=4>4</option>
+								<option value=5>5</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">關閉</button>
+					<input type="submit" value="送出" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+<script>
+	$('#deleteOrder').click(function () {
+		if (@Model.orders.OrderState == 1 || @Model.orders.OrderState == 6) {
+			if (confirm("確定刪除此訂單?")) {
+				var token = $('input[name="__RequestVerificationToken"]').val();
+
+				$.ajax({
+					url: '/Members/OrderDelete',
+					type: 'POST',
+					data: { id: @Model.orders.OrderID, __RequestVerificationToken: token },
+					success: function (data) { },
+					error: function () { alert(); }
+				}).done(function () {
+					$.ajax({
+						url: window.location.replace('/Members/OrderIndex/@Model.orders.MemberID?page=@ViewBag.page')
+					});
+				});
+			}
+		} else {
+			alert('店家已接單，目前無法刪除。請待訂單完成及評價後再嘗試刪除此訂單!');
+		}
+	});
+</script>
+}

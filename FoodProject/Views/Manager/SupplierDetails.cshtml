@@ -1,0 +1,161 @@
+﻿@model FoodProject.ViewModels.VMSuppliers
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "店家管理-詳情";
+}
+
+<h2><strong>店家管理-詳情</strong></h2>
+
+<div class="form-horizontal">
+	<hr />
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			店家照片
+		</label>
+		<div class="col-md-10">
+			<img src="/Home/GetSupplierImage/@Model.Supplier.SupplierID" class="img-thumbnail img-max" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SupplierName)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SupplierName)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SAccPwd.SAccount)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SAccPwd.SAccount)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			提供餐點類別
+		</label>
+		<div class="col-md-10">
+			@for (int i = 0; i < Model.Categories.Count; i++)
+			{
+				<label class="checkbox-inline">
+					@Html.CheckBoxFor(model => model.Categories[i].IsSelected, new { @onclick = "return false" })
+					@Model.Categories[i].CategoryName
+				</label>
+				@Html.HiddenFor(model => model.Categories[i].CategoryID)
+				@Html.HiddenFor(model => model.Categories[i].CategoryName)
+			}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SCellphone)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SCellphone)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SPhone)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SPhone)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SEmail)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.Supplier.SEmail)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SRoad)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Model.Supplier.SCity@Model.Supplier.SDistrict@Model.Supplier.SRoad
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.BusinessHour)
+		</label>
+		<div class="col-md-10 pt-6">
+			@if (Model.Supplier.BusinessHour != null)
+			{
+				@Html.Raw(Model.Supplier.BusinessHour.ToString().Replace("\r\n", "<br />"))
+			}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.Supplier.SAuthority)
+		</label>
+		<div class="col-md-10 pt-6">
+			@(Model.Supplier.SAuthority? "開啟": "停用")
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			@if (Model.Supplier.SAuthority)
+			{
+				<button class="btn btn-danger authority">停用</button>
+			}
+			else
+			{
+				<button class="btn btn-info authority">開啟</button>
+			}
+			@Html.ActionLink("返回", "SuppliersIndex", new { page = ViewBag.page }, new { @class = "btn"})
+		</div>
+	</div>
+</div>
+
+<hr />
+
+<table class="table">
+	<caption>供應餐點</caption>
+	<tr class="bg-info">
+		<th>圖示</th>
+		<th>餐點</th>
+		<th>價錢</th>
+		<th>折扣</th>
+		<th>下架</th>
+	</tr>
+
+	@foreach (var item in Model.Products)
+	{
+		<tr>
+			<td><img src="@Url.Action("GetProductImage", "Home", new { id = item.ProductID})" width="60"></td>
+			<td>@item.PName</td>
+			<td>@Html.DisplayFor(modelItem => item.Price)</td>
+			<td>@Html.DisplayFor(modelItem => item.Discount)</td>
+			<td>@(item.Discontinuted? "是": "否")</td>
+		</tr>
+	}
+</table>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+	<script>
+		let token = $('input[name="__RequestVerificationToken"]').val();
+		let supID = @Model.Supplier.SupplierID;
+
+			$('.authority').click(function () {
+				$.ajax({
+					url: '/Manager/SupplierEdit',
+					type: 'POST',
+					data: { id: supID, route: 'details', page: @ViewBag.page, __RequestVerificationToken: token },
+					success: function () {
+						location.reload();
+					},
+					error: function () { alert(); }
+				});
+			});
+	</script>
+}

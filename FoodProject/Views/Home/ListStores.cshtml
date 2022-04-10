@@ -1,0 +1,17 @@
+﻿@model IEnumerable<FoodProject.Models.Suppliers>
+
+@{
+	ViewBag.Title = "店家列表";
+}
+
+<div class="bg-banner">
+	<h2><strong>JoinFood<br />與朋友、同事、家人，輕鬆享受美食</strong></h2>
+</div>
+<hr />
+
+@using (Ajax.BeginForm("_ListStores", new AjaxOptions { HttpMethod = "Post", UpdateTargetId = "storeUpdate" }))
+{
+	<div id="storeUpdate">
+		@Html.Action("_ListStores", new { area = ViewBag.Area })
+	</div>
+}

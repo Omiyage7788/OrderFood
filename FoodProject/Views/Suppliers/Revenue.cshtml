@@ -1,0 +1,31 @@
+﻿@model IEnumerable<FoodProject.ViewModels.DailyRevenue>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+	ViewBag.Title = "營業額";
+}
+
+<h2><strong>營業額</strong></h2>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>日期</th>
+		<th>金額</th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@item.Date.ToString("d")</td>
+			<td>@string.Format("{0:C0}", item.Revenue)</td>
+		</tr>
+	}
+</table>
+
+<h2 class="text-center">@ViewBag.NoData</h2>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("NotificationIndex", new { page }))
+</div>
+

@@ -1,0 +1,265 @@
+﻿.mt-10 {
+	margin-top: 10px;
+}
+
+.border-bt {
+	border-bottom: 1px solid #ddd;
+}
+
+.bg-banner {
+	background-image: url(../SourcePhotos/food-bg.jpg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bg-banner > h2 {
+	background: rgba(255,255,255,0.7);
+	text-align: center;
+	margin: 2rem;
+	padding: 1rem;
+}
+
+.cart-contain {
+	z-index: 10;
+	font-size: 5rem;
+	position: fixed;
+	right: 10px;
+	bottom: 10px
+}
+
+.cart {
+	background: #ddd;
+	color: #333;
+	padding: 10px 10px 0 10px;
+	border-radius: 10px;
+	font-size: 40px;
+}
+
+.cart:hover {
+	background: #333;
+	color: #fff;
+}
+
+.shopimg {
+	width: 100%;
+	max-height: 150px;
+}
+
+.text-truncate {
+	overflow: hidden;
+	max-width: 100%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.m-19 {
+	margin-right: 19px;
+	margin-left: 19px;
+}
+
+.pt-6 {
+	padding-top: 6px;
+}
+
+.shop-hr {
+	border-bottom: 1px solid #ddd;
+}
+
+.rate {
+	color: blue;
+}
+
+.navbar-inverse {
+	background-color: #fff;
+	box-shadow: 0px 3px 3px #ddd;
+	border: none;
+}
+
+.text-bolder {
+	font-weight: bolder;
+}
+
+.navbar-inverse .navbar-brand {
+	color: blue;
+}
+
+.navbar-brand:hover {
+	color: #1b2374 !important;
+}
+
+.nav > li > a:hover {
+	color: black !important;
+}
+
+.nav > li > span {
+	padding: 15px;
+	display: block;
+}
+
+.navbar-inverse .navbar-toggle {
+	border-color: #fff;
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+	background-color: blue;
+}
+
+.img-max {
+	max-width: 500px;
+}
+
+.form-horizontal .radio, .form-horizontal .checkbox {
+	width: 20px;
+	height: 20px;
+}
+
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus {
+	color: black;
+	background-color: #eee;
+}
+
+.div-background {
+	border: white solid;
+	width: 100%;
+	height: 300px;
+}
+
+.img-background {
+	width: 100%;
+	height: 100%;
+	object-fit: cover
+}
+
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+	z-index: 1000;
+	position: fixed;
+	left: 250px;
+	width: 0;
+	height: 100%;
+	margin-left: -250px;
+	overflow-y: auto;
+	background: #343a40;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #6c757d;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #fafbfe;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #fafbfe;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #98a6ad;
+    background: none;
+}
+
+#title {
+	z-index: 1;
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+
+@media screen and (min-width:1700px) {
+	.shopimg {
+		max-height: none;
+	}
+
+	#wrapper {
+		padding-left: 250px;
+	}
+
+	#wrapper.toggled {
+		padding-left: 250px;
+	}
+
+	#sidebar-wrapper {
+		width: 250px;
+	}
+}
+
+@media screen and (max-width:992px) {
+	.shopimg {
+		max-height: none;
+	}
+}
+
+@media screen and (max-width:600px) {
+	.img-max {
+		max-width: 100%;
+	}
+}
+
+@media screen and (min-width:768px) {
+	.navbar-nav {
+		float: right;
+	}
+
+	.navbar-default .navbar-toggle:hover,
+	.navbar-default .navbar-toggle:focus {
+		background-color: #000;
+	}
+}

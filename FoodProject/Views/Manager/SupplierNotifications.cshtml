@@ -1,0 +1,55 @@
+﻿@model IEnumerable<FoodProject.Models.SupMessage>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "店家推播列表";
+}
+
+<h2><strong>店家推播列表-@ViewBag.supName</strong></h2>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>
+			@Html.DisplayNameFor(model => model.MessageID)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.SMessage)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.StartDate)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.EndDate)
+		</th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.MessageID)
+			</td>
+			<td>
+				@Html.Raw(item.SMessage.ToString().Replace("\r\n", "<br />"))
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.StartDate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.EndDate)
+			</td>
+		</tr>
+	}
+</table>
+
+<h2 class="text-center">
+	@ViewBag.NoNotifications
+</h2>
+
+<a href="javascript:void(0)" onclick="history.go(-1)" class="btn btn-primary">返回</a>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("SuppliersIndex", new { page }))
+</div>

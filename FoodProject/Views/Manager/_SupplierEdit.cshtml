@@ -1,0 +1,22 @@
+﻿@model FoodProject.Models.Suppliers
+
+<div class="form-group">
+	<label class="control-label col-md-2">
+		@Html.DisplayNameFor(model => model.SAuthority)
+	</label>
+	<div class="col-md-10 pt-6">
+		@(Model.SAuthority? "開啟": "停用")
+	</div>
+</div>
+<div class="form-group">
+	<div class="col-md-offset-2 col-md-10">
+		@if (Model.SAuthority)
+		{
+			<input type="submit" class="btn btn-danger" value="停用" />
+		}
+		else
+		{
+			<input type="submit" class="btn btn-info" value="停用" />
+		}
+	</div>
+</div>

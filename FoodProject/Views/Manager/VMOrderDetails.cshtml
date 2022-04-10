@@ -1,0 +1,70 @@
+﻿@model FoodProject.ViewModels.VMOrderDetails
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "訂單管理-詳情";
+	var sumAmount = Model.orderDetails.Sum(o => o.Quantity);
+	var total = @Model.orderDetails.Sum(o => (o.Price - o.Discount) * o.Quantity);
+}
+
+<h2><strong>訂單管理-詳情</strong></h2>
+
+<div class="row border-bt">
+	<h4 class="col-sm-2 text-primary">訂購人</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.Members.MName</p>
+	<h4 class="col-sm-2 text-primary">訂購日期</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderDate.ToString("yyyy-MM-dd")</p>
+	<h4 class="col-sm-2 text-primary">送達日期時間</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.RequiredDate.ToString("yyyy-MM-dd HH:mm")</p>
+	<h4 class="col-sm-2 text-primary">送達地點</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipAddress</p>
+	<h4 class="col-sm-2 text-primary">運送方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">付款方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.PayMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">訂單狀態</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderStatus.Status</p>
+	<h4 class="col-sm-2 text-primary">評價</h4>
+	@if (Model.orders.OrderState != 6)
+	{
+		<p class="col-sm-2 mt-10">尚無評價</p>
+	}
+	else
+	{
+		<p class="col-sm-2 mt-10">@Model.orders.Rate</p>
+	}
+</div>
+<div class="row border-bt">
+	<h4 class="col-sm-1 text-primary">備註</h4>
+	<p class="col-sm-5 mt-10">@Model.orders.Note</p>
+</div>
+
+<h4 class="text-primary">訂購店家</h4>
+<table class="table">
+	<caption>@Model.orders.OrderTitle</caption>
+	<tr class="bg-info">
+		<th >餐點</th>
+		<th>價錢</th>
+		<th>折扣</th>
+		<th>數量</th>
+		<th>小計</th>
+	</tr>
+
+	@foreach (var item in Model.orderDetails)
+	{
+		<tr>
+			<td>@item.Products.PName</td>
+			<td>@string.Format("{0:C0}", item.Price)</td>
+			<td>@string.Format("{0:C0}", item.Discount)</td>
+			<td>@item.Quantity</td>
+			<td>@string.Format("{0:C0}", (item.Price - item.Discount) * item.Quantity)</td>
+		</tr>
+	}
+</table>
+
+<h3 class="text-danger text-right"><strong>共@(sumAmount + "份餐點，總計：" + string.Format("{0:C0}", total))</strong></h3>
+
+<div class="col-sm-offset-1 col-sm-11">
+	<a href="javascript:void(0)" onclick="history.go(-1)" class="btn btn-primary">返回</a>
+</div>
+<br />

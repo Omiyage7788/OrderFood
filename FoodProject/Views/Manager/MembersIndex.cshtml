@@ -1,0 +1,103 @@
+﻿@model IEnumerable<FoodProject.Models.Members>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "客戶管理";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色，使用後請立即登出!</strong></p>
+<h2><strong>客戶管理</strong></h2>
+
+<div class="table-responsive">
+	<table class="table">
+		<tr class="bg-info">
+			<th>
+				@Html.DisplayNameFor(model => model.MemberID)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MAccPwd.MAccount)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MCellphone)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MEmail)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.MAuthority)
+			</th>
+			<th>修改權限</th>
+			<th>查看訂單</th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr class="member">
+				<td class="memID">
+					@Html.DisplayFor(modelItem => item.MemberID)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.MAccPwd.MAccount)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.MName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.MCellphone)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.MEmail)
+				</td>
+				@if (item.MAuthority)
+				{
+					<td>開啟</td>
+					<td>
+						<button class="btn btn-danger authority">停用</button>
+					</td>
+				}
+				else
+				{
+					<td>停用</td>
+					<td>
+						<button class="btn btn-info authority">開啟</button>
+					</td>
+				}
+				<td>
+					@Html.ActionLink("詳情", "MemberOrders", new { id = item.MemberID, pageMember = ViewBag.page }, new { @class = "btn btn-primary" })
+				</td>
+			</tr>
+		}
+	</table>
+</div>
+
+@Html.AntiForgeryToken()
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("MembersIndex", new { page }))
+</div>
+
+@section Scripts {
+	<script>
+		let token = $('input[name="__RequestVerificationToken"]').val();
+
+		$('.authority').click(function () {
+			let member = $(this).closest('.member');
+			let memID = parseInt(member.find('.memID').text().trim());
+
+			$.ajax({
+				url: '/Manager/MemberEdit',
+				type: 'POST',
+				data: { id: memID, __RequestVerificationToken: token },
+				success: function () {
+					location.reload();
+				},
+				error: function () { alert(); }
+			});
+		});
+	</script>
+}

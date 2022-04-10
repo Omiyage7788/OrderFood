@@ -1,0 +1,84 @@
+﻿@model FoodProject.Models.Members
+
+@{
+	ViewBag.Title = "會員註冊";
+}
+
+<h2><strong>會員註冊</strong></h2>
+
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+	<h4></h4>
+	<hr />
+	@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+	<div class="form-group">
+		@Html.LabelFor(model => model.MName, "名稱", htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.MName, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.MName, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.MCellphone, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.MCellphone, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.MCellphone, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.MEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.MEmail, new { htmlAttributes = new { @class = "form-control", @type = "email" } })
+			@Html.ValidationMessageFor(model => model.MEmail, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.MAccPwd.MAccount, "設定帳號", htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			@Html.EditorFor(model => model.MAccPwd.MAccount, new { htmlAttributes = new { @class = "form-control" } })
+			@Html.ValidationMessageFor(model => model.MAccPwd.MAccount, "", new { @class = "text-danger" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		@Html.LabelFor(model => model.MAccPwd.MPassword, "設定密碼", htmlAttributes: new { @class = "control-label col-md-2" })
+		<div class="col-md-10">
+			<div class="input-group" style="display: inline-flex">
+				@Html.EditorFor(model => model.MAccPwd.MPassword, new { htmlAttributes = new { @class = "form-control pwd", @type = "password" } })
+				<span class="input-group-btn">
+					<button class="btn btn-default reveal" type="button"><i class="glyphicon glyphicon-eye-open"></i></button>
+				</span>
+			</div>
+			<div>
+				@Html.ValidationMessageFor(model => model.MAccPwd.MPassword, "", new { @class = "text-danger" })
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			<input type="submit" value="送出" class="btn btn-primary" />
+			@Html.ActionLink("返回", "Login", "", new { @class = "btn" })
+		</div>
+	</div>
+</div>
+}
+
+@*<div>
+		@Html.ActionLink("返回首頁", "Index", "Home")
+	</div>*@
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		$(".reveal").click(pwdDisplay);
+	</script>
+}

@@ -1,0 +1,153 @@
+﻿@model FoodProject.ViewModels.VMSuppliers
+
+@{
+	ViewBag.Title = "店家註冊";
+}
+
+<h2><strong>店家註冊</strong></h2>
+
+
+@*@using (Html.BeginForm())
+{*@
+<form action="@Url.Action("CreateSupplier")" method="post" enctype="multipart/form-data">
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4></h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SupplierName, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SupplierName, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SupplierName, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-md-2">提供餐點類別</label>
+			<div class="col-md-10">
+				@for (int i = 0; i < Model.Categories.Count; i++)
+				{
+					<label class="checkbox-inline">
+						@Html.CheckBoxFor(model => model.Categories[i].IsSelected)
+						@Model.Categories[i].CategoryName
+					</label>
+					@Html.HiddenFor(model => model.Categories[i].CategoryID)
+					@Html.HiddenFor(model => model.Categories[i].CategoryName)
+					if ((i + 1) % 4 == 0)
+					{
+						<br />
+					}
+				}
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SCellphone, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SCellphone, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SCellphone, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SPhone, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SPhone, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SPhone, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SEmail, new { htmlAttributes = new { @class = "form-control", @type = "email" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SEmail, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SCity, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SCity, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SCity, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SDistrict, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SDistrict, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SDistrict, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SRoad, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SRoad, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SRoad, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.BusinessHour, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.TextAreaFor(model => model.Supplier.BusinessHour, new { @class = "form-control" })
+				@Html.ValidationMessageFor(model => model.Supplier.BusinessHour, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SAccPwd.SAccount, "設定帳號", htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Supplier.SAccPwd.SAccount, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Supplier.SAccPwd.SAccount, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Supplier.SAccPwd.SPassword, "設定密碼", htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<div class="input-group" style="display: inline-flex">
+					@Html.EditorFor(model => model.Supplier.SAccPwd.SPassword, new { htmlAttributes = new { @class = "form-control pwd", @type = "password" } })
+					<span class="input-group-btn">
+						<button class="btn btn-default reveal" type="button"><i class="glyphicon glyphicon-eye-open"></i></button>
+					</span>
+				</div>
+				<div>
+					@Html.ValidationMessageFor(model => model.Supplier.SAccPwd.SPassword, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-md-2">上傳照片</label>
+			<div class="col-md-10">
+				<input id="File1" type="file" name="image" class="" />
+				@*<label for="File1" class="btn btn-default">新增照片</label>*@
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="送出" class="btn btn-primary" />
+				@Html.ActionLink("返回", "Login", "", new { @class = "btn" })
+			</div>
+		</div>
+	</div>
+</form>
+@*}*@
+
+@*<div>
+		@Html.ActionLink("Back to List", "Index")
+	</div>*@
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		$(".reveal").click(pwdDisplay);
+	</script>
+}

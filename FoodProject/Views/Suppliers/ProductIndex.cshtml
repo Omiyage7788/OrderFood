@@ -1,0 +1,67 @@
+﻿@model IEnumerable<FoodProject.Models.Products>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+	ViewBag.Title = "商品管理";
+}
+<h2><strong>商品管理-@ViewBag.supName</strong></h2>
+
+<p>
+    @Html.ActionLink("新增", "ProductCreate", new { page = ViewBag.page}, new { @class = "btn btn-warning" })
+</p>
+
+<table class="table">
+    <tr class="bg-info">
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.PName)
+        </th>
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        @*<th class="text-center">
+            @Html.DisplayNameFor(model => model.PPhoto)
+        </th>*@
+        <th class="text-center">
+            @Html.DisplayNameFor(model => model.Discount)
+        </th>
+        <th class="text-center">
+            下架
+        </th>
+        <th class="text-center"></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr class="text-center">
+        <td>
+            @Html.DisplayFor(modelItem => item.PName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        @*<td>
+			<img src="/Home/GetProductImage/@item.ProductID" class="img-thumbnail" style="width:150px; height:120px"/>
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.Discount)
+        </td>
+		<td>
+			@(item.Discontinuted ? "是" : "否")
+			@*@Html.DisplayFor(modelItem => item.Discontinuted)*@
+		</td>
+		<td>
+			@Html.ActionLink("詳情", "ProductEdit", new { id = item.ProductID, page = ViewBag.page }, new { @class = "btn btn-primary" })
+			@*@Html.ActionLink("下架", "ProductEdit", new { id = item.ProductID }, new { @class = "btn btn-danger" })*@
+		</td>
+    </tr>
+}
+
+</table>
+
+<h2 class="text-center">
+	@ViewBag.NoProduct
+</h2>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("ProductIndex", new { page }))
+</div>

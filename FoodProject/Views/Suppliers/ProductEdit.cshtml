@@ -1,0 +1,80 @@
+﻿@model FoodProject.Models.Products
+
+@{
+	ViewBag.Title = "商品管理-詳情";
+}
+
+<h2><strong>商品管理-詳情</strong></h2>
+
+
+@*@using (Html.BeginForm())
+	{*@
+<form action="@Url.Action("ProductEdit")" method="post" enctype="multipart/form-data">
+	@Html.AntiForgeryToken()
+	<input name="page" type="hidden" value="@ViewBag.page" />
+
+	<div class="form-horizontal">
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+		@Html.HiddenFor(model => model.ProductID)
+		@Html.HiddenFor(model => model.SupplierID)
+		@Html.HiddenFor(model => model.PPhoto)
+		@Html.HiddenFor(model => model.ImageFormat)
+
+		<div class="form-group">
+			<label class="control-label col-md-2">商品照片</label>
+			<div class="col-md-10">
+				<img src="/Home/GetProductImage/@Model.ProductID" class="img-thumbnail img-max" />
+				<input id="File1" type="file" name="image" class="form-control hidden" />
+				<br />
+				<label for="File1" class="btn btn-info">點擊更新照片</label>
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.PName, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.PName, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.PName, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Discount, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.Discount, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Discontinuted, "下架", htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				<select class="form-control" name="Discontinuted">
+					<option value="false">否</option>
+					<option value="true">是</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="確定修改" class="btn btn-primary" />
+				@Html.ActionLink("返回", "ProductIndex", new { id = Model.SupplierID, page = ViewBag.page }, new { @class = "btn"})
+			</div>
+		</div>
+	</div>
+</form>
+@*}*@
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

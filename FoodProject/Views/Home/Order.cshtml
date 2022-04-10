@@ -1,0 +1,91 @@
+﻿@model FoodProject.Models.Orders
+
+@{
+	ViewBag.Title = "訂單明細";
+}
+
+<h2><strong>訂單明細</strong></h2>
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+
+	<div class="form-horizontal">
+		<h4>請輸入細項</h4>
+		<hr />
+		@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.OrderDate, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.OrderDate, new { htmlAttributes = new { @Value = Model.OrderDate.ToString("yyyy/MM/dd"), @class = "form-control", @readonly = "readonly" } })
+				@Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.RequiredDate, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.RequiredDate, new { htmlAttributes = new { @class = "form-control", @Value = Model.RequiredDate.ToString("yyyy/MM/dd HH:mm") } })
+				@Html.ValidationMessageFor(model => model.RequiredDate, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.ShipVia, "取餐方式", htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.DropDownList("ShipVia", null, htmlAttributes: new { @class = "form-control" })
+			</div>
+		</div>
+
+		<div class="form-group" id="shipInfo" hidden>
+			@Html.LabelFor(model => model.ShipAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.EditorFor(model => model.ShipAddress, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.ShipAddress, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.TextAreaFor(model => model.Note, new { @class = "form-control", @placeholder = "您可以在這裡附註其它需求。" })
+				@Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+			</div>
+		</div>
+
+		<div class="form-group">
+			@Html.LabelFor(model => model.PayVia, "付款方式", htmlAttributes: new { @class = "control-label col-md-2" })
+			<div class="col-md-10">
+				@Html.DropDownList("PayVia", null, htmlAttributes: new { @class = "form-control" })
+			</div>
+		</div>
+
+		<input id="data" type="hidden" name="cart" />
+		<input id="orderTitle" type="hidden" name="orderTitle" />
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="確定" class="btn btn-default" />
+			</div>
+		</div>
+	</div>
+}
+
+@section scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		if (localStorage.getItem("cart")) {
+			$('#data').val(localStorage.getItem("cart"));
+			var cart = JSON.parse(localStorage.getItem("cart"));
+			$('#orderTitle').val(cart[0]["SupName"]);
+		}
+
+		$('#ShipVia').on('change', function () {
+			if (this.value == "1") {
+				$('#shipInfo').prop("hidden", true);
+			} else {
+				$('#shipInfo').prop("hidden", false);
+			}
+		});
+	</script>
+}

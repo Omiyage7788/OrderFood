@@ -1,0 +1,138 @@
+﻿@model FoodProject.Models.Suppliers
+@{
+	ViewBag.Title = "我的訂餐車";
+	var OrderStatus = 0;
+	if (TempData["Order"] != null)
+	{
+		OrderStatus = 1;
+	}
+}
+
+<style>
+	.vertical {
+		vertical-align: middle !important;
+	}
+
+	#link a {
+		color: black;
+	}
+
+	#link a:hover {
+		text-decoration: none;
+	}
+</style>
+
+<h2><strong>我的訂餐車</strong></h2>
+<h4 class="text-info" id="SupName"></h4>
+
+<table id="cart" class="table table-hover table-striped">
+	<thead>
+		<tr class="bg-info">
+			<th class="text-center">圖示</th>
+			<th class="text-center">品名</th>
+			<th class="text-center">單價</th>
+			<th class="text-center">折扣</th>
+			<th class="text-center">數量</th>
+			<th class="text-center">小計</th>
+			<th class="text-center">移除</th>
+		</tr>
+	</thead>
+	<tbody class="text-center"></tbody>
+	<tfoot>
+		<tr>
+			<th colspan="7">
+				<h2 id="total" class="text-danger text-right"></h2>
+			</th>
+		</tr>
+	</tfoot>
+</table>
+<div class="btn btn-default">
+	<span class="glyphicon glyphicon-chevron-left" id="link">
+		<a href="javascript:void(0)" onclick="history.go(-1)">繼續訂餐</a>
+	</span>
+</div>
+<div class="text-right pull-right" id="funcBtn">
+	<button class="btn btn-info" id="update"><span class="glyphicon glyphicon-refresh"></span> 更新我的訂餐車</button>
+	<button class="btn btn-danger" id="clear"><span class="glyphicon glyphicon-trash"></span> 清空我的訂餐車</button>
+	<a href="/Home/Order" class="btn btn-success" id="order"><span class="glyphicon glyphicon-usd"></span> 結帳</a>
+</div>
+
+@section scripts {
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		var cart = [];
+
+		if (@OrderStatus == 1) {
+			localStorage.removeItem("cart");
+			alert("結帳完成!");
+			setSession("cartHasItems", "clear");
+			$('#link').empty().append('<a href="/Home/Index">繼續訂餐</a>');
+		}
+
+		initCart();
+
+		function initCart() {
+			if (localStorage.getItem("cart")) {
+				cart = JSON.parse(localStorage.getItem("cart"));
+				let cartList = "";
+				let total = 0;
+				let sumAmount = 0;
+				for (let i = 0; i < cart.length; i++) {
+					cartList += `<tr><td><img src='/Home/GetProductImage/${cart[i]["PID"]}' width='100' height='80' /></td>
+												<td class='vertical'>${cart[i]["PName"]}</td>
+												<td class='vertical'>${cart[i]["Price"]}</td>
+												<td class='vertical'>${cart[i]["PDisc"]}</td>
+												<td class='vertical'><input class='form-control center-block' type='number' min='1' style='width: 60px;' id='${cart[i]["PID"]}' value='${cart[i]["PAmount"]}' /></td>
+												<td class='vertical'>${(cart[i]["Price"] - cart[i]["PDisc"]) * cart[i]["PAmount"]}</td>
+												<td class='vertical'><input id='${i}' type='button' value='移除' class='btn btn-warning' /></td></tr>`;
+					sumAmount += parseInt(cart[i]["PAmount"]);
+					total += (cart[i]["Price"] - cart[i]["PDisc"]) * cart[i]["PAmount"];
+				}
+
+				$('#cart>tbody').empty().append(cartList);
+				$('#total').text('共' + sumAmount + '份餐點，合計金額：' + total);
+				$('#SupName').empty().append(cart[0]["SupName"]);
+			} else {
+				$('#cart>tbody').html('<tr><td colspan="7"><h3><strong>訂餐車是空的</strong></h3><h5 class="text-info">目前訂餐車中沒有任何商品，開始訂購喜歡的餐點吧!</h5></td></tr>');
+				$('#funcBtn').hide();
+			}
+		}
+
+		$('#clear').click(function () {
+			if (confirm("確定清空訂餐車?")) {
+				localStorage.removeItem("cart");
+				initCart();
+				$('#total').empty();
+				setSession("cartHasItems", "clear");
+				$('#cartRoute1').empty().append("<a style='cursor: pointer' class='empty'>訂餐車</a>");
+				$('#SupName').empty();
+			}
+		});
+
+		$('#cart').click(function (ev) {
+			if (ev.target.value == "移除") {
+				if (confirm("確定移除" + cart[ev.target.id]["PName"] + "?")) {
+					cart.splice(ev.target.id, 1);
+					localStorage.setItem("cart", JSON.stringify(cart));
+					if (localStorage.getItem("cart") == "[]") {
+						localStorage.removeItem("cart");
+						$('#total').empty();
+						setSession("cartHasItems", "clear");
+						$('#cartRoute1').empty().append("<a style='cursor: pointer' class='empty'>訂餐車</a>");
+						$('#SupName').empty();
+					}
+					initCart();
+				}
+			}
+		});
+
+		$('#update').click(function () {
+			for (let i = 0; i < cart.length; i++) {
+				cart[i]["PAmount"] = $('#' + cart[i]["PID"]).val();
+			}
+
+			localStorage.setItem("cart", JSON.stringify(cart));
+			initCart();
+		});
+	</script>
+}

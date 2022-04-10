@@ -1,0 +1,76 @@
+﻿@model IEnumerable<FoodProject.Models.Orders>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "客戶管理-查看訂單";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>客戶管理-@(ViewBag.memName + "的訂單")</strong></h2>
+
+<div class="table-responsive">
+	<table class="table">
+		<tr class="bg-info">
+			<th>
+				@Html.DisplayNameFor(model => model.OrderID)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.OrderDate)
+			</th>
+			<th>
+				訂購店家
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Rate)
+			</th>
+			<th>
+				客戶刪除此訂單紀錄
+			</th>
+			<th></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.OrderID)
+				</td>
+				<td>
+					@item.OrderDate.ToString("yyyy/MM/dd HH:mm")
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.OrderTitle)
+				</td>
+
+				<td>
+					@if (item.Rate != null)
+					{
+						@item.Rate
+					}
+					else
+					{
+						@("未評價")
+					}
+				</td>
+				<td>
+					@(item.OrderDisplay? "否":"是")
+				</td>
+				<td class="text-center">
+					@Html.ActionLink("詳情", "VMOrderDetails", new { id = item.OrderID }, new { @class = "btn btn-primary" })
+				</td>
+			</tr>
+		}
+	</table>
+</div>
+
+<h2 class="text-center">
+	@ViewBag.NoOrder
+</h2>
+
+@Html.ActionLink("返回", "MembersIndex", new { page = ViewBag.pageMember}, new { @class = "btn btn-primary" })
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("MemberOrders", new { pageMember = ViewBag.pageMember, page }))
+</div>

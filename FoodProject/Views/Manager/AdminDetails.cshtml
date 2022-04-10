@@ -1,0 +1,34 @@
+﻿@model FoodProject.Models.Administrators
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "帳號資料";
+}
+
+<h2><strong>帳號資料</strong></h2>
+
+<div class="form-horizontal">
+	<hr />
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.AdminName)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.AdminName)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.AdminAccPwd.AdminAccount)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.AdminAccPwd.AdminAccount)
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			@Html.ActionLink("更新資料", "AdminEdit", new { id = Model.AdminID }, new { @class = "btn btn-primary" })
+		</div>
+	</div>
+</div>

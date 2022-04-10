@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FoodProject.Models.AdminMessage>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "推播管理-系統";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>推播管理-系統</strong></h2>
+
+<span>
+	@Html.ActionLink("新增", "AdminNotificationCreate", new { page = ViewBag.page}, new { @class = "btn btn-warning" })
+</span>
+
+<p class="pull-right">
+	@Html.ActionLink("查看系統推播", "AdminNotificationIndex", "", new { @class = "btn" })|
+	@Html.ActionLink("查看店家推播", "SupNotificationsIndex", "", new { @class = "btn" })
+</p>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>
+			推播編號
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.StartDate)
+		</th>
+		<th>
+			發布人
+		</th>
+		<th>
+			發布對象
+		</th>
+		<th>
+			內容
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.MessageID)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.StartDate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Administrators.AdminName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.ReceiveGroup.Recipient)
+			</td>
+			<td>
+				@Html.Raw(item.AMessage.ToString().Replace("\r\n", "<br />"))
+			</td>
+			<td class="text-center">
+				@Html.ActionLink("刪除", "AdminNotificationDelete", new { id = item.MessageID, page = ViewBag.page }, new { @class = "btn btn-danger" })
+			</td>
+		</tr>
+	}
+</table>
+
+<h2 class="text-center">@ViewBag.NoData</h2>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("AdminNotificationIndex", new { page }))
+</div>

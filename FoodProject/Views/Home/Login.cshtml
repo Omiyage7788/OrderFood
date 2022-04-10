@@ -1,0 +1,115 @@
+﻿@model FoodProject.ViewModels.VMLogin
+
+@{
+	ViewBag.Title = "登入/註冊";
+}
+
+<div class="row">
+	<div class="col-md-6">
+		<h2><strong>會員登入</strong></h2>
+
+		@using (Html.BeginForm())
+		{
+			@Html.AntiForgeryToken()
+
+			<div class="form-horizontal">
+				<hr />
+				@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.MAccPwd.MAccount, "帳號", htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.MAccPwd.MAccount, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.MAccPwd.MAccount, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.MAccPwd.MPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						<div class="input-group" style="display: inline-flex">
+							@Html.EditorFor(model => model.MAccPwd.MPassword, new { htmlAttributes = new { @class = "form-control pwd", @type = "password" } })
+							<span class="input-group-btn">
+								<button class="btn btn-default reveal" type="button"><i class="glyphicon glyphicon-eye-open"></i></button>
+							</span>
+						</div>
+						<div>
+							@Html.ValidationMessageFor(model => model.MAccPwd.MPassword, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-offset-2 col-md-10 text-danger" style="margin-bottom: 10px">
+					@ViewBag.LoginMem
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="登入" class="btn btn-primary" />
+						@Html.ActionLink("註冊", "CreateMember", "", new { @class = "btn" })
+					</div>
+				</div>
+
+				<input id="Hidden1" name="q" type="hidden" value="@Request.QueryString["q"]" />
+
+			</div>
+		}
+	</div>
+
+	<div class="col-md-6">
+		<h2><strong>店家登入</strong></h2>
+
+		<form action="@Url.Action("SupplierLogin")" method="post">
+			@Html.AntiForgeryToken()
+
+			<div class="form-horizontal">
+				<hr />
+				@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.SAccPwd.SAccount, "帳號", htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						@Html.EditorFor(model => model.SAccPwd.SAccount, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.SAccPwd.SAccount, "", new { @class = "text-danger" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					@Html.LabelFor(model => model.SAccPwd.SPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+					<div class="col-md-10">
+						<div class="input-group" style="display: inline-flex">
+							@Html.EditorFor(model => model.SAccPwd.SPassword, new { htmlAttributes = new { @class = "form-control pwd", @type = "password" } })
+							<span class="input-group-btn">
+								<button class="btn btn-default reveal" type="button"><i class="glyphicon glyphicon-eye-open"></i></button>
+							</span>
+						</div>
+						<div>
+							@Html.ValidationMessageFor(model => model.SAccPwd.SPassword, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+
+				<div class="col-md-offset-2 col-md-10 text-danger" style="margin-bottom: 10px">
+					@ViewBag.LoginSup
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-2 col-md-10">
+						<input type="submit" value="登入" class="btn btn-primary" />
+						@Html.ActionLink("註冊", "CreateSupplier", "", new { @class = "btn" })
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		$(".reveal").click(pwdDisplay);
+	</script>
+}
+
+

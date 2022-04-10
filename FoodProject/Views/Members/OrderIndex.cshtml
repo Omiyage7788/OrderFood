@@ -1,0 +1,168 @@
+﻿@model IEnumerable<FoodProject.Models.Orders>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	ViewBag.Title = "訂單管理";
+}
+
+<h2><strong>訂單管理</strong></h2>
+
+<div class="table-responsive">
+	<table id="order" class="table">
+		<tr class="bg-info">
+			<th class="text-center">
+				訂購店家
+			</th>
+			@*<th class="text-center">
+					@Html.DisplayNameFor(model => model.OrderDate)
+				</th>*@
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.RequiredDate)
+			</th>
+			@*<th class="text-center">
+					@Html.DisplayNameFor(model => model.PayMethod.Method)
+				</th>*@
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.ShipMethod.Method)
+			</th>
+			@*<th class="text-center">
+					@Html.DisplayNameFor(model => model.ShipAddress)
+				</th>
+				<th class="text-center">
+					@Html.DisplayNameFor(model => model.Note)
+				</th>*@
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.OrderState)
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.ReadyTime)
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.Rate)
+			</th>
+			<th class="text-center"></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr class="text-center">
+				<td>
+					@Html.DisplayFor(modelItem => item.OrderTitle)
+				</td>
+				@*<td>
+						@item.OrderDate.ToString("d")
+					</td>*@
+				<td>
+					@Html.DisplayFor(modelItem => item.RequiredDate)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.PayMethod.Method)
+					</td>*@
+				<td>
+					@Html.DisplayFor(modelItem => item.ShipMethod.Method)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.ShipAddress)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Note)
+					</td>*@
+				<td>
+					@Html.DisplayFor(modelItem => item.OrderStatus.Status)
+				</td>
+				<td>
+					@if (item.ReadyTime.HasValue)
+					{
+						@item.ReadyTime
+					}
+					else
+					{
+						@("尚無資料")
+					}
+				</td>
+				<td>
+					@if (item.Rate != null)
+					{
+						@item.Rate
+					}
+					else
+					{
+						@("未評價")
+					}
+				</td>
+				<td>
+					@if (item.OrderState == 3)
+					{
+						<input type="button" value="給評價" class="btn btn-warning" data-toggle="modal" data-target="#SubmitModal" />
+					}
+					@Html.ActionLink("詳情", "VMOrderDetail", new { id = item.OrderID, page = ViewBag.page }, new { @class = "btn btn-primary" })
+				</td>
+				<td class="hidden" title="@item.OrderID"></td>
+			</tr>
+		}
+	</table>
+</div>
+
+<h2 class="text-center">@ViewBag.NoOrder</h2>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("OrderIndex", new { page }))
+</div>
+
+@Html.AntiForgeryToken()
+
+<div class="modal fade" tabindex="-1" id="SubmitModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">請為此訂單提供您的評價(最高評價為5，最低為1)</h4>
+			</div>
+			<div class="modal-body" style="margin-bottom: 20px;">
+				<div class="form-group">
+					<label class="control-label col-sm-2">評價：</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="Rate">
+							<option value=1>1</option>
+							<option value=2>2</option>
+							<option value=3>3</option>
+							<option value=4>4</option>
+							<option value=5>5</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">關閉</button>
+				<button class="btn btn-primary" id="submitRate">送出</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		var order, orderID;
+
+		$('.btn-warning').click(function () {
+			order = $(this).closest('.text-center');
+			orderID = parseInt(order.find('.hidden').attr('title'));
+		});
+
+		$('#submitRate').click(function () {
+			let rate = parseInt($('#Rate').val());
+			let token = $('input[name="__RequestVerificationToken"]').val();
+
+			$.ajax({
+				url: '/Members/RateOrder',
+				type: 'POST',
+				data: { id: orderID, Rate: rate, page: @ViewBag.page, __RequestVerificationToken: token },
+				success: function () {
+					$("#SubmitModal").modal("hide");
+					location.reload();
+				},
+				error: function () { alert(); }
+			});
+		});
+	</script>
+}

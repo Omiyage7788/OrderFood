@@ -1,0 +1,162 @@
+﻿@model FoodProject.ViewModels.VMOrderDetails
+
+@{
+	ViewBag.Title = "訂單管理-詳情";
+	var sumAmount = Model.orderDetails.Sum(o => o.Quantity);
+	var total = @Model.orderDetails.Sum(o => (o.Price - o.Discount) * o.Quantity);
+}
+
+<h2><strong>訂單管理-詳情</strong></h2>
+
+<div class="row border-bt">
+	<h4 class="col-sm-2 text-primary">訂購人</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.Members.MName</p>
+	<h4 class="col-sm-2 text-primary">下訂日期</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderDate.ToString("yyyy-MM-dd")</p>
+	<h4 class="col-sm-2 text-primary">送達日期時間</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.RequiredDate.ToString("yyyy-MM-dd HH:mm")</p>
+	<h4 class="col-sm-2 text-primary">送達地點</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipAddress</p>
+	<h4 class="col-sm-2 text-primary">運送方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.ShipMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">付款方式</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.PayMethod.Method</p>
+	<h4 class="col-sm-2 text-primary">訂單狀態</h4>
+	<p class="col-sm-2 mt-10">@Model.orders.OrderStatus.Status</p>
+	<h4 class="col-sm-2 text-primary">評價</h4>
+	@if (Model.orders.OrderState != 6)
+	{
+		<p class="col-sm-2 mt-10">尚無評價</p>
+	}
+	else
+	{
+		<p class="col-sm-2 mt-10">@Model.orders.Rate</p>
+	}
+</div>
+<div class="row border-bt">
+	<h4 class="col-sm-1 text-primary">備註</h4>
+	<p class="col-sm-5 mt-10">@Model.orders.Note</p>
+	@*<h4 class="col-sm-1 text-primary">訂餐連結</h4>
+		<p class="col-sm-5 mt-10">https://www.google.com</p>*@
+</div>
+
+<table class="table">
+	<caption>下訂餐點</caption>
+	<tr class="bg-info">
+		<th class="text-center">餐點</th>
+		<th class="text-center">價錢</th>
+		<th class="text-center">折扣</th>
+		<th class="text-center">數量</th>
+		<th class="text-center">小計</th>
+	</tr>
+
+	@foreach (var item in Model.orderDetails)
+	{
+		<tr class="text-center">
+			<td>@item.Products.PName</td>
+			<td>@string.Format("{0:C0}", item.Price)</td>
+			<td>@string.Format("{0:C0}", item.Discount)</td>
+			<td>@item.Quantity</td>
+			<td>@string.Format("{0:C0}", (item.Price - item.Discount) * item.Quantity)</td>
+		</tr>
+	}
+</table>
+
+<h3 class="text-danger text-right"><strong>共@(sumAmount + "份餐點，總計：" + string.Format("{0:C0}", total))</strong></h3>
+
+<form action="@Url.Action("OrderEstablished")" method="post">
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(model => model.orders.OrderID)
+	@Html.HiddenFor(model => model.orders.OrderTitle)
+	@Html.HiddenFor(model => model.orders.MemberID)
+	@Html.HiddenFor(model => model.orders.OrderDate)
+	@Html.HiddenFor(model => model.orders.RequiredDate)
+	@Html.HiddenFor(model => model.orders.ShipAddress)
+	@Html.HiddenFor(model => model.orders.Note)
+	@Html.HiddenFor(model => model.orders.ShipVia)
+	@Html.HiddenFor(model => model.orders.PayVia)
+	@Html.HiddenFor(model => model.orders.OrderUrl)
+	@Html.HiddenFor(model => model.orders.OrderDisplay)
+	<input name="page" type="hidden" value="@ViewBag.page" />
+
+	<div class="form-horizontal">
+		<hr />
+		@*<div class="form-group">
+				<label class="control-label col-sm-1" for="Rate">評價</label>
+				<div class="col-sm-2">
+					<input class="form-control" id="Rate" type="text" readonly value="@Model.orders.Rate" />
+				</div>
+			</div>*@
+		@if (Model.orders.OrderState == 1)
+		{
+			<div class="form-group">
+				@Html.LabelFor(model => model.orders.ReadyTime, "出貨時間", htmlAttributes: new { @class = "control-label col-sm-1" })
+				<div class="col-sm-3">
+					@Html.EditorFor(model => model.orders.ReadyTime, 
+				   new { htmlAttributes = new { @class = "form-control", type = "datetime-local", required = "required", title = "請提供預計出貨時間" } })
+					@Html.ValidationMessageFor(model => model.orders.ReadyTime, "", new { @class = "text-danger" })
+				</div>
+			</div>
+		}
+		<div class="form-group">
+			<div class="col-sm-offset-1 col-sm-10">
+				@if (Model.orders.OrderState == 1)
+				{
+					<input type="submit" value="確認出貨" class="btn btn-warning" />
+					<input type="button" value="取消訂單" class="btn btn-danger" data-toggle="modal" data-target="#SubmitModal" />
+				}
+				@Html.ActionLink("返回", "OrderIndex", new { id = Session["supID"], page = ViewBag.page }, new { @class = "btn btn-primary" })
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<div class="modal fade" tabindex="-1" id="SubmitModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="@Url.Action("OrderCanceled")" method="post">
+				@Html.AntiForgeryToken()
+				@Html.HiddenFor(model => model.orders.OrderID)
+				@Html.HiddenFor(model => model.orders.OrderTitle)
+				@Html.HiddenFor(model => model.orders.MemberID)
+				@Html.HiddenFor(model => model.orders.OrderDate)
+				@Html.HiddenFor(model => model.orders.RequiredDate)
+				@Html.HiddenFor(model => model.orders.ShipAddress)
+				@Html.HiddenFor(model => model.orders.Note)
+				@Html.HiddenFor(model => model.orders.ShipVia)
+				@Html.HiddenFor(model => model.orders.PayVia)
+				@Html.HiddenFor(model => model.orders.OrderUrl)
+				@Html.HiddenFor(model => model.orders.OrderDisplay)
+				<input name="page" type="hidden" value="@ViewBag.page" />
+
+				<div class="modal-header">
+					<h4 class="modal-title">請提供取消訂單原因</h4>
+					@*<button type="button" class="close" data-dismiss="modal">
+				<span>&times;</span>
+			</button>*@
+				</div>
+
+				<div class="modal-body" style="margin-bottom: 20px;">
+					<div class="form-group">
+						@Html.LabelFor(model => model.orders.SupplierDecline, "說明：", htmlAttributes: new { @class = "control-label col-sm-2" })
+						<div class="col-sm-10">
+							@Html.EditorFor(model => model.orders.SupplierDecline, 
+							new { htmlAttributes = new { @class = "form-control", required = "required" } })
+							@Html.ValidationMessageFor(model => model.orders.SupplierDecline, "", new { @class = "text-danger" })
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">關閉</button>
+					<input type="submit" value="送出" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+}

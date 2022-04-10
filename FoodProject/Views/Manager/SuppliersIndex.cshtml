@@ -1,0 +1,132 @@
+﻿@model IEnumerable<FoodProject.Models.Suppliers>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "店家管理";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>店家管理</strong></h2>
+
+<div class="table-responsive">
+	<table class="table">
+		<tr class="bg-info">
+			<th>
+				@Html.DisplayNameFor(model => model.SupplierID)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.SupplierName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.SCellphone)
+			</th>
+			@*<th>
+					@Html.DisplayNameFor(model => model.SPhone)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.SEmail)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.SCity)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.SDistrict)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.SRoad)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.BusinessHour)
+				</th>*@
+			<th>
+				@Html.DisplayNameFor(model => model.SAuthority)
+			</th>
+			<th>修改權限</th>
+			<th>查看推播</th>
+			<th>店家資料</th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr class="supplier">
+				<td class="supID">
+					@Html.DisplayFor(modelItem => item.SupplierID)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.SupplierName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.SCellphone)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.SPhone)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.SEmail)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.SCity)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.SDistrict)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.SRoad)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.BusinessHour)
+					</td>*@
+				@if (item.SAuthority)
+				{
+					<td>開啟</td>
+					<td>
+						<button class="btn btn-danger authority">停用</button>
+					</td>
+				}
+				else
+				{
+					<td>停用</td>
+					<td>
+						<button class="btn btn-info authority">開啟</button>
+					</td>
+				}
+				<td>
+					@Html.ActionLink("列表", "SupplierNotifications", new { id = item.SupplierID }, new { @class = "btn btn-default" })
+				</td>
+				<td>
+					@Html.ActionLink("詳情", "SupplierDetails", new { id = item.SupplierID, page = ViewBag.page }, new { @class = "btn btn-primary" })
+				</td>
+				<td class="hidden" title="@item.SupplierID"></td>
+			</tr>
+		}
+	</table>
+</div>
+
+@Html.AntiForgeryToken()
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("SuppliersIndex", new { page }))
+</div>
+
+@section Scripts {
+	<script>
+		let token = $('input[name="__RequestVerificationToken"]').val();
+
+		$('.authority').click(function () {
+			let supplier = $(this).closest('.supplier');
+			let supID = parseInt(supplier.find('.supID').text().trim());
+
+			$.ajax({
+				url: '/Manager/SupplierEdit',
+				type: 'POST',
+				data: { id: supID, route: 'index', __RequestVerificationToken: token },
+				success: function () {
+					location.reload();
+				},
+				error: function () { alert(); }
+			});
+		});
+	</script>
+}

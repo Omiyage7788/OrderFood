@@ -1,0 +1,29 @@
+﻿
+@{
+	ViewBag.Title = "查看店家";
+}
+
+<div class="bg-banner">
+	<h2><strong>JoinFood<br />與朋友、同事、家人，輕鬆享受美食</strong></h2>
+</div>
+
+<h2><strong>今晚想來點什麼?</strong></h2>
+
+
+<form class="form-inline" method="post" action="/Home/Index" style="margin-left: 1%;">
+	<fieldset>
+		<h3 style="margin-top: 3px;">請輸入覓食地區</h3>
+		<div class="form-group" style="width: 100%">
+			<input id="area" name="area" type="text" class="form-control" style="width: 100%" />
+			<input type="submit" value="找美食" class="btn btn-primary" />
+		</div>
+		<span class="text-danger">@ViewBag.Msg</span>
+	</fieldset>
+</form>
+
+@section scripts {
+	<script src="~/Scripts/MyScript.js"></script>
+	<script>
+		setCartState();
+	</script>
+}

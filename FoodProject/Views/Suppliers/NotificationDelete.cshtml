@@ -1,0 +1,48 @@
+﻿@model FoodProject.Models.SupMessage
+
+@{
+    ViewBag.Title = "刪除推播";
+}
+
+<h2><strong>刪除推播</strong></h2>
+
+<h3>確認刪除此則推播訊息?</h3>
+<div class="form-horizontal">
+	<hr />
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			起始日
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.StartDate)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			結束日
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.EndDate)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			內容
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.Raw(Model.SMessage.ToString().Replace("\r\n", "<br />"))
+		</div>
+	</div>
+
+	@using (Html.BeginForm())
+	{
+		@Html.AntiForgeryToken()
+
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<input type="submit" value="刪除" class="btn btn-danger" />
+				@Html.ActionLink("返回", "NotificationIndex", new { id = Session["supID"], page = ViewBag.page }, new { @class = "btn btn-primary" })
+			</div>
+		</div>
+	}
+</div>

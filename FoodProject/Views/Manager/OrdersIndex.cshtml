@@ -1,0 +1,73 @@
+﻿@model IEnumerable<FoodProject.Models.Orders>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "訂單列表";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>訂單列表</strong></h2>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>
+			@Html.DisplayNameFor(model => model.OrderID)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.Members.MName)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.OrderDate)
+		</th>
+		<th>
+			訂購店家
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.Rate)
+		</th>
+		<th>
+			客戶刪除此訂單紀錄
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.OrderID)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.Members.MName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.OrderDate)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.OrderTitle)
+			</td>
+			<td>
+				@if (item.Rate != null)
+				{
+					@item.Rate
+				}
+				else
+				{
+					@("未評價")
+				}
+			</td>
+			<td>
+				@(item.OrderDisplay? "否":"是")
+			</td>
+			<td class="text-center">
+				@Html.ActionLink("詳情", "VMOrderDetails", new { id = item.OrderID }, new { @class = "btn btn-primary" })
+			</td>
+		</tr>
+	}
+</table>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("OrdersIndex", new { page }))
+</div>

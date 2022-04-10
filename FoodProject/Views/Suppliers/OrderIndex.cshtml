@@ -1,0 +1,113 @@
+﻿@model IEnumerable<FoodProject.Models.Orders>
+@using PagedList
+@using PagedList.Mvc
+
+@{
+	ViewBag.Title = "訂單管理";
+}
+
+<h2><strong>訂單管理</strong></h2>
+
+<div class="table-responsive">
+	<table class="table">
+		<tr class="bg-info">
+			<th class="text-center">
+				訂購人
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.OrderDate)
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.RequiredDate)
+			</th>
+			@*<th class="text-center">
+					@Html.DisplayNameFor(model => model.PayMethod.Method)
+				</th>
+				<th class="text-center">
+					@Html.DisplayNameFor(model => model.ShipMethod.Method)
+				</th>
+				<th class="text-center">
+					@Html.DisplayNameFor(model => model.ShipAddress)
+				</th>
+				<th class="text-center">
+					@Html.DisplayNameFor(model => model.Note)
+				</th>*@
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.ReadyTime)
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.OrderState)
+			</th>
+			<th class="text-center">
+				@Html.DisplayNameFor(model => model.Rate)
+			</th>
+			<th class="text-center"></th>
+		</tr>
+
+		@foreach (var item in Model)
+		{
+			<tr class="text-center">
+				<td>
+					@Html.DisplayFor(modelItem => item.Members.MName)
+				</td>
+				<td>
+					@item.OrderDate.ToString("yyyy/MM/dd")
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.RequiredDate)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.PayMethod.Method)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ShipMethod.Method)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ShipAddress)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Note)
+					</td>*@
+				<td>
+					@if (item.ReadyTime.HasValue)
+					{
+						@item.ReadyTime
+					}
+					else
+					{
+						@("無資料")
+					}
+				</td>
+				<td>
+					@if (item.OrderState == 1)
+					{
+						<span>新訂單</span>
+					}
+					else
+					{
+						@Html.DisplayFor(modelItem => item.OrderStatus.Status)
+					}
+				</td>
+				<td>
+					@if (item.Rate != null)
+					{
+						@item.Rate
+					}
+					else
+					{
+						@("尚未評價")
+					}
+				</td>
+				<td>
+					@Html.ActionLink("詳情", "VMOrderDetail", new { id = item.OrderID, page = ViewBag.page }, new { @class = "btn btn-primary" })
+				</td>
+			</tr>
+		}
+	</table>
+</div>
+
+<h2 class="text-center">@ViewBag.NoOrder</h2>
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("OrderIndex", new { page }))
+</div>

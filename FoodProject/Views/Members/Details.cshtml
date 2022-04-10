@@ -1,0 +1,65 @@
+﻿@model FoodProject.Models.Members
+
+@{
+    ViewBag.Title = "會員資料";
+}
+
+<h2><strong>會員資料</strong></h2>
+
+<div class="form-horizontal">
+	<hr />
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.MName)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.MName)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.MCellphone)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.MCellphone)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.MEmail)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.MEmail)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">
+			@Html.DisplayNameFor(model => model.MAccPwd.MAccount)
+		</label>
+		<div class="col-md-10 pt-6">
+			@Html.DisplayFor(model => model.MAccPwd.MAccount)
+		</div>
+	</div>
+
+	@*<dt>
+				@Html.DisplayNameFor(model => model.MAuthority)
+			</dt>
+
+			<dd>
+				@Html.DisplayFor(model => model.MAuthority)
+			</dd>
+
+		<dt>
+				@Html.DisplayNameFor(model => model.MAccPwd.MPassword)
+			</dt>
+
+			<dd>
+				@Html.DisplayFor(model => model.MAccPwd.MPassword)
+			</dd>*@
+
+	<div class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			@Html.ActionLink("更新資料", "Edit", new { id = Model.MemberID }, new { @class = "btn btn-primary" })
+		</div>
+	</div>
+</div>

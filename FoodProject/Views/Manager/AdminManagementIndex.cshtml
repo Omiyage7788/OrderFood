@@ -1,0 +1,107 @@
+﻿@model IEnumerable<FoodProject.Models.Administrators>
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+	Layout = "/Views/Shared/_Layout_Manager.cshtml";
+	ViewBag.Title = "管理員管理";
+}
+
+<p class="alert alert-danger"><strong>您目前是管理員角色,使用後請立即登出</strong></p>
+<h2><strong>管理員管理</strong></h2>
+
+<p>
+	@Html.ActionLink("新增", "AdminManagementCreate", "", new { @class = "btn btn-warning" })
+</p>
+
+<table class="table">
+	<tr class="bg-info">
+		<th>
+			@Html.DisplayNameFor(model => model.AdminAccPwd.AdminAccount)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.AdminName)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.AdminAuthority)
+		</th>
+		<th>
+			修改權限
+		</th>
+		<th></th>
+	</tr>
+
+	@foreach (var item in Model)
+	{
+		<tr class="admin">
+			<td class="account">
+				@Html.DisplayFor(modelItem => item.AdminAccPwd.AdminAccount)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => item.AdminName)
+			</td>
+			@if (item.AdminAuthority)
+			{
+				<td>開啟</td>
+				<td>
+					<button class="btn btn-danger authority">停用</button>
+				</td>
+			}
+			else
+			{
+				<td>停用</td>
+				<td>
+					<button class="btn btn-info authority">開啟</button>
+				</td>
+			}
+			<td>
+				<button class="btn btn-danger delete">刪除</button>
+			</td>
+			<td class="hidden" title="@item.AdminID"></td>
+		</tr>
+	}
+</table>
+@Html.AntiForgeryToken()
+
+<div class="text-center">
+	@Html.PagedListPager((IPagedList)Model, page => Url.Action("AdminManagementIndex", new { page }))
+</div>
+
+@section Scripts {
+	<script>
+		let token = $('input[name="__RequestVerificationToken"]').val();
+
+		$('.authority').click(function () {
+			let admin = $(this).closest('.admin');
+			let adminID = parseInt(admin.find('.hidden').attr('title'));
+
+			$.ajax({
+				url: '/Manager/AdminManagementEdit',
+				type: 'POST',
+				data: { id: adminID, __RequestVerificationToken: token },
+				success: function () {
+					location.reload();
+				},
+				error: function () { alert(); }
+			});
+		});
+
+		$('.delete').click(function () {
+			let admin = $(this).closest('.admin');
+			let adminID = parseInt(admin.find('.hidden').attr('title'));
+			let account = admin.find('.account').text().trim();
+
+			if (confirm("確定刪除管理員帳號" + account + "?")) {
+				$.ajax({
+					url: '/Manager/AdminManagementDelete',
+					type: 'POST',
+					data: { id: adminID, __RequestVerificationToken: token },
+					success: function () {
+						location.reload();
+					},
+					error: function () { alert(); }
+				});
+			}
+		});
+	</script>
+}
